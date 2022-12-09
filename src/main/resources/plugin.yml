@@ -1,0 +1,10 @@
+name: Home System
+version: '${version}'
+main: de.deriton.home_system_common.HomeSystem
+api-version: 1.19
+authors: [ Deriton ]
+commands:
+  sethome:
+    description: Setze dein Home
+    usage: /sethome [Name]
+    permission: landania.homeystem.sethome
