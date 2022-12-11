@@ -1,4 +1,4 @@
-name: Home System
+name: Home-System
 version: '${version}'
 main: de.deriton.home_system_common.HomeSystem
 api-version: 1.19
@@ -8,3 +8,15 @@ commands:
     description: Setze dein Home
     usage: /sethome [Name]
     permission: landania.homeystem.sethome
+  homes:
+    description: Sieh dir all deine Homes an!
+    usage: /homes
+    permission: landania.homesystem.homes
+  delhome:
+    description: Lösche ein Home
+    usage: /delhome [Name]
+    permission: landania.homesystem.delhome
+  home:
+    description: Teleportiere dich zu einem Homepunkt
+    usage: /home [Name]
+    permission: landania.homesystem.home

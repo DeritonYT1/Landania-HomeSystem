@@ -1,0 +1,10 @@
+{
+  "de": {
+    "gui_title": "Deine Homes",
+    "gui_deleteall": "Alle Homes löschen",
+    "cmd_sethome": "Dein Home wurde erfolgreich gesetzt!",
+    "cmd_delhome": "Dein Home wurde erfolgreich gelöscht!",
+    "cmd_home_notexist": "Der angegebene Home existiert nicht!",
+    "no_permission": "Du hast nicht genügend Rechte um diesen Befehl auszuführen!"
+  }
+}
