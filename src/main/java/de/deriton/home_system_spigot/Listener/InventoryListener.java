@@ -1,4 +1,4 @@
-package de.deriton.home_system_spigot.Commands.Listener;
+package de.deriton.home_system_spigot.Listener;
 
 import de.deriton.home_system_api.HomeData;
 import de.deriton.home_system_api.InventoryData;
@@ -31,9 +31,12 @@ public class InventoryListener implements Listener {
             ItemMeta tmp_meta;
             ItemStack tmp_itemstack;
 
-            if(event.getCurrentItem().getType() == Material.LEGACY_SKULL_ITEM && s == 49 ) {
+            if(s == 49 ) {
                 data.deleteallhomes(p.getUniqueId().toString());
                 p.sendMessage("Du hast erfolgreich alle Homes gelöscht!");
+            } else if(event.getCurrentItem().getType() == Material.PAPER) {
+                String HomeName = event.getCurrentItem().getItemMeta().getDisplayName();
+                data.getHome(p.getUniqueId().toString(),HomeName.substring(2), p);
             }
         }
         event.setCancelled(true);

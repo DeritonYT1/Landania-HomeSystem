@@ -1,17 +1,11 @@
 package de.deriton.home_system_api;
 
 import de.deriton.home_system_common.HomeSystem;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
-import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 public class BungeeListener {
 
@@ -34,5 +28,13 @@ public class BungeeListener {
         return plugin;
     }
 
-
+    /*@Override
+    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
+        if(!channel.equals("BungeeCord")) {
+            return;
+        }
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String SubServer = in.readUTF();
+    }
+     */
 }

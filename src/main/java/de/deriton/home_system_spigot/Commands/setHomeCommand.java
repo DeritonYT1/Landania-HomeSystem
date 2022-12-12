@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import de.deriton.home_system_api.DBConnector;
 import de.deriton.home_system_api.HomeData;
+import de.deriton.home_system_api.LanguageData;
 import de.deriton.home_system_common.ConfigCreators.ConfigCreator;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -21,10 +22,12 @@ import java.sql.SQLException;
 public class setHomeCommand implements CommandExecutor {
 
     private HomeData data = null;
+    private LanguageData langdata = null;
 
-    public setHomeCommand(HomeData data) {
+    public setHomeCommand(HomeData data, LanguageData langdata) {
         super();
         this.data = data;
+        this.langdata = langdata;
     }
 
     @Override
@@ -40,9 +43,9 @@ public class setHomeCommand implements CommandExecutor {
             Location loc = p.getLocation();
             try {
                 //Sets or Replaces Home of User
-
                 data.setHome(p.getUniqueId().toString(), args[0], p.getWorld().getName(), "Test", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
                 p.sendMessage("Dein Home '" + args[0] + "' wurde erfolgreich gesetzt!");
+                System.out.println(langdata.getLanguageString(p, "Test"));
                 try {
                     System.out.println(data.getHomes(p.getUniqueId().toString()));
                 } catch (SQLException e) {
