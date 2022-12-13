@@ -1,62 +1,58 @@
 package de.deriton.home_system_spigot.Commands;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-import de.deriton.home_system_api.DBConnector;
 import de.deriton.home_system_api.HomeData;
-import de.deriton.home_system_api.LanguageData;
-import de.deriton.home_system_common.ConfigCreators.ConfigCreator;
+import de.deriton.home_system_common.ConfigCreators.MessageConfigCreator;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ProxiedCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.ProxySelector;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class setHomeCommand implements CommandExecutor {
 
     private HomeData data = null;
-    private LanguageData langdata = null;
+    private MessageConfigCreator msgdata = null;
 
-    public setHomeCommand(HomeData data, LanguageData langdata) {
+    public setHomeCommand(HomeData data, MessageConfigCreator msgdata) {
         super();
         this.data = data;
-        this.langdata = langdata;
+        this.msgdata = msgdata;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player p = (Player) sender;
-        if(args.length == 1) {
             // Check if sender is a Player
-            if(!(sender instanceof Player)) {
-                sender.sendMessage("Nur Spieler können diesen Command ausführen!");
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(msgdata.getNonPlayer_usage());
                 return false;
             }
-            // Get Player, his Location and save Home Data in Database
-            Location loc = p.getLocation();
-            try {
-                //Sets or Replaces Home of User
-                data.setHome(p.getUniqueId().toString(), args[0], p.getWorld().getName(), "Test", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-                p.sendMessage("Dein Home '" + args[0] + "' wurde erfolgreich gesetzt!");
-                System.out.println(langdata.getLanguageString(p, "Test"));
-                try {
-                    System.out.println(data.getHomes(p.getUniqueId().toString()));
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+            Player p = (Player) sender;
+            //Check Permission
+            if(p.hasPermission("landania.homesystem.sethome") || p.isOp()) {
+                if (args.length == 1) {
+
+                    // Get Player, his Location and save Home Data in Database
+                    Location loc = p.getLocation();
+                    //Sets or Replaces Home of User
+                    try {
+                        //sethome Function w/ overwrite
+                        if (data.setHome(p.getUniqueId().toString(), args[0], p.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getYaw(), loc.getPitch(), p)) {
+                            p.sendMessage(msgdata.getCmd_sethome().replace("[HomeName]", args[0]));
+                        }
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return true;
+                } else {
+                    p.sendMessage(msgdata.getWrong_usage());
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                return true;
+            } else {
+                p.sendMessage(msgdata.getNo_permission());
+                return true;
             }
-        } else {
-            p.sendMessage("Falscher Syntax! Bitte benutze /sethome [Name]");
-        }
-        return true;
     }
 }

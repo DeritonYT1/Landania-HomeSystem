@@ -15,22 +15,21 @@ public class DBConnector {
     public DBConnector() {
     }
 
-
-    // String host, int port, String datbase; String tablename, String user, String password
-
     public boolean connect(ConfigCreator cfg) {
         try {
+            //Creates Database if not exists & Opens Connection to the database
             con = DriverManager.getConnection("jdbc:mysql://" + cfg.getHost() + ":" + cfg.getPort() + "/"  + "?autoReconnect=true&allowMultiQueries=true", cfg.getUser(), cfg.getPassword());
             String sql = "CREATE DATABASE IF NOT EXISTS `" + cfg.getDatabase() + "`;";
             sql += "CREATE TABLE IF NOT EXISTS `" + cfg.getDatabase() + "`.`" + cfg.getTablename() + "`(`id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,\n" +
                     "`uuid` VARCHAR(36) NOT NULL COLLATE 'utf8mb4_general_ci',\n" +
                     "`HomeName` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',\n" +
                     "`HomeWorld` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci', \n" +
-                    "`HomeServer` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',\n" +
+               //   "`HomeServer` VARCHAR(32) NOT NULL COLLATE 'utf8mb4_general_ci',\n" +
                     "`CoordinateX` DECIMAL(12,6) NOT NULL DEFAULT '0.000000',\n" +
                     "`CoordinateY` DECIMAL(12,6) NOT NULL DEFAULT '0.000000',\n" +
                     "`CoordinateZ` DECIMAL(12,6) NOT NULL DEFAULT '0.000000',\n" +
-                    "`pinned` INT(10) UNSIGNED NOT NULL DEFAULT '0',\n" +
+                    "`yaw` FLOAT NOT NULL DEFAULT '0',\n" +
+                    "`pitch` FLOAT NOT NULL DEFAULT '0',\n" +
                     "`createdAt` TIMESTAMP NOT NULL DEFAULT current_timestamp(),\n" +
                     "PRIMARY KEY (`id`) USING BTREE,\n" +
                     "UNIQUE INDEX `uuidHome` (`uuid`, `HomeName`) USING BTREE \n" +
@@ -49,6 +48,7 @@ public class DBConnector {
     }
 
     public void disconnect() {
+        //Disconnect from DB
         try {
             this.con.close();
         } catch(SQLException e) {
@@ -57,6 +57,7 @@ public class DBConnector {
     }
 
     public PreparedStatement prepare(String stmt) {
+        //prepare Statement
         try {
             return this.con.prepareStatement(stmt);
         } catch (SQLException e) {

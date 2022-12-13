@@ -7,7 +7,7 @@ commands:
   sethome:
     description: Setze dein Home
     usage: /sethome [Name]
-    permission: landania.homeystem.sethome
+    permission: landania.homesystem.sethome
   homes:
     description: Sieh dir all deine Homes an!
     usage: /homes

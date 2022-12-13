@@ -1,6 +1,8 @@
 package de.deriton.home_system_api;
 
 import javax.annotation.Nullable;
+
+import de.deriton.home_system_common.ConfigCreators.MessageConfigCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,41 +19,11 @@ public class InventoryData {
 
     private DBConnector cmddb = null;
     private HomeData data = null;
+    private MessageConfigCreator msgdata = null;
 
-    public InventoryData(DBConnector db) {
+    public InventoryData(DBConnector db, MessageConfigCreator msgdata) {
         this.cmddb = db;
-    }
-
-    public Inventory setInventoryItem(Player p) throws SQLException {
-
-        Inventory inv = Bukkit.getServer().createInventory((InventoryHolder)null, 54, "§aDeine Homes");
-        ItemStack deleteall_homes = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (short) 3);
-        SkullMeta deleteall_homesMeta = (SkullMeta) deleteall_homes.getItemMeta();
-        deleteall_homesMeta.setDisplayName("§cAlle Homes löschen!");
-        deleteall_homesMeta.setOwner("MHF_ArrowRight");
-        deleteall_homes.setItemMeta(deleteall_homesMeta);
-
-        ItemStack placeholder = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta placeholder_Meta = (ItemMeta) placeholder.getItemMeta();
-        placeholder_Meta.setDisplayName(" ");
-        placeholder.setItemMeta(placeholder_Meta);
-
-        try {
-            System.out.println(data.getHomes(p.getUniqueId().toString()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        inv.setItem(45, deleteall_homes);
-        inv.setItem(46, placeholder);
-        inv.setItem(47, placeholder);
-        inv.setItem(48, placeholder);
-        inv.setItem(49, deleteall_homes);
-        inv.setItem(50, placeholder);
-        inv.setItem(51, placeholder);
-        inv.setItem(52, placeholder);
-        inv.setItem(53, deleteall_homes);
-        return inv;
+        this.msgdata = msgdata;
     }
 
     public @Nullable ItemMeta getItemMeta() {
@@ -59,6 +31,7 @@ public class InventoryData {
     }
 
     public void setInvItem(int aPos, Inventory aInv, String Name, Material Mat, boolean Homepoints) {
+        //Set Homepoint Items
         ItemStack tmp_itemstack;
         String tmp_displayname;
         tmp_itemstack = new ItemStack(Mat);
@@ -67,9 +40,9 @@ public class InventoryData {
         tmp_meta.setDisplayName("§e" + tmp_displayname);
         if(Homepoints == true) {
             ArrayList<String> lorelist = new ArrayList<String>();
-            lorelist.add("§7Klicke, um dich zum Home zu teleportieren");
-            lorelist.add("");
-            lorelist.add("§7Server: ");
+            lorelist.add("§7" + msgdata.getGui_HomeItemDescriptionLine1());
+            lorelist.add("§7" + msgdata.getGui_HomeItemDescriptionLine2());
+            lorelist.add("§7" + msgdata.getGui_HomeItemDescriptionLine3());
             tmp_meta.setLore(lorelist);
         }
         tmp_itemstack.setItemMeta(tmp_meta);

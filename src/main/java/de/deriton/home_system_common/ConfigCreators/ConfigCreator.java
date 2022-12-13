@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ConfigCreator {
+    //var creation of config inputs
     private String host;
     private int port;
     private String user;

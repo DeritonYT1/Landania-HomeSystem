@@ -3,25 +3,36 @@ package de.deriton.home_system_common;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.deriton.home_system_common.ConfigCreators.ConfigCreator;
-import de.deriton.home_system_common.ConfigCreators.DELanguageCreator;
-import de.deriton.home_system_common.ConfigCreators.ENLanguageCreator;
+import de.deriton.home_system_common.ConfigCreators.MessageConfigCreator;
 import lombok.Getter;
 
 import java.io.*;
 
 @Getter
 public class ConfigReader {
+    //Reads the messages and db Config
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private final File ConfigFile = new File("plugins//HomeSystem//config.json");
-    private final File DE_Language_File = new File("plugins//HomeSystem//locales//de.json");
-    private final File EN_Language_File = new File("plugins//HomeSystem//locales//en.json");
+    private final File MessageConfig = new File("plugins//HomeSystem//messages.json");
 
     public void saveConfig() {
 
         ConfigCreator config = new ConfigCreator("localhost", 3306, "root", "", "HomeSystem", "Homes", true);
-        DELanguageCreator deconfig = new DELanguageCreator("Deine Homes!", "Alle Homes löschen!", "Dein Home wurde erfolgreich gesetzt!", "Dein Home wurde erfolgreich gelöscht!", "Der amgegebene Home existiert nicht!", "Du hast nicht genügend Rechte um diesen Befehl auszuführen");
-        ENLanguageCreator enconfig = new ENLanguageCreator("Your Homes!", "Delete all Homes!", "Your Home got set successfully!", "Your home got deleted successfully!", "The specified home does not exist!", "You do not have enough permissions to run this command!");
+        MessageConfigCreator msgconfig = new MessageConfigCreator(
+                "Deine Homes!",
+                "Klicke, um dich zum Home zu teleportieren",
+                "",
+                "Server: ",
+                "Alle Homes löschen!",
+                "Du hast erfolgreich alle Homes gelöscht!",
+                "Du hast die maximale Anzahl an Homes erreicht! Lösche erst einen um einen neuen zu erstellen!",
+                "Dein Home [HomeName] wurde erfolgreich gesetzt!",
+                "Dein Home [HomeName] wurde erfolgreich gelöscht!",
+                "Der angegebene Home existiert nicht!",
+                "Du hast nicht genügend Rechte um diesen Befehl auszuführen",
+                "Falsche Benutzung!",
+                "Nur Spieler können diesen Command benutzen!");
 
 
         ConfigFile.getParentFile().mkdirs();
@@ -34,22 +45,12 @@ public class ConfigReader {
             e.printStackTrace();
         }
 
-        DE_Language_File.getParentFile().mkdirs();
-        try (FileWriter fileWriter = new FileWriter(DE_Language_File)) {
-            if(!DE_Language_File.exists()) {
-                DE_Language_File.createNewFile();
+        MessageConfig.getParentFile().mkdirs();
+        try (FileWriter fileWriter = new FileWriter(MessageConfig)) {
+            if(!MessageConfig.exists()) {
+                MessageConfig.createNewFile();
             }
-            fileWriter.write(gson.toJson(deconfig));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        EN_Language_File.getParentFile().mkdirs();
-        try (FileWriter fileWriter = new FileWriter(EN_Language_File)) {
-            if(!EN_Language_File.exists()) {
-                EN_Language_File.createNewFile();
-            }
-            fileWriter.write(gson.toJson(enconfig));
+            fileWriter.write(gson.toJson(msgconfig));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,15 +73,15 @@ public class ConfigReader {
 
     }
 
-    public DELanguageCreator readDEConfig() {
+    public MessageConfigCreator readMessageConfig() {
 
-        if(!DE_Language_File.exists()) {
+        if(!MessageConfig.exists()) {
             saveConfig();
         }
 
         try {
-            DELanguageCreator deconfig = gson.fromJson(new FileReader(DE_Language_File), DELanguageCreator.class);
-            return deconfig;
+            MessageConfigCreator msgconfig = gson.fromJson(new FileReader(MessageConfig), MessageConfigCreator.class);
+            return msgconfig;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -88,18 +89,4 @@ public class ConfigReader {
 
     }
 
-    public ENLanguageCreator readENConfig() {
-
-        if(!EN_Language_File.exists()) {
-            saveConfig();
-        }
-
-        try {
-            ENLanguageCreator enconfig = gson.fromJson(new FileReader(EN_Language_File), ENLanguageCreator.class);
-            return enconfig;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
